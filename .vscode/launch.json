@@ -17,7 +17,7 @@
       ],
       "env": {
         "DEBUG": "@hadeshe93/*",
-        "RUN": "1"
+        "FLOW_RUN": "1"
       }
     },
     {

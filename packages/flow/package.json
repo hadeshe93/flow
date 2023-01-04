@@ -21,12 +21,11 @@
     "url": "git+https://github.com/hadeshe93/flow.git"
   },
   "scripts": {
-    "debug:init": "cross-env DEBUG=@hadeshe93/* RUN=1 ts-node -P ./tsconfig.json ./src/index.ts init",
-    "debug:dev": "cross-env DEBUG=@hadeshe93/* RUN=1 ts-node -P ./tsconfig.json ./src/index.ts dev --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3 --pageName demo1",
-    "debug:help": "RUN=1 ts-node -P ./tsconfig.json ./src/index.ts --help",
+    "debug:init": "cross-env DEBUG=@hadeshe93/* FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts init",
+    "debug:dev": "cross-env DEBUG=@hadeshe93/* FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts dev --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3 --pageName demo1",
+    "debug:help": "FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts --help",
     "build": "cross-env NODE_ENV=production tsc -p tsconfig.json",
     "showconfig": "ts-node -P ./tsconfig.json --showConfig",
-    "dev:flow": "cross-env DEBUG=vice* RUN=1 ts-node -P ./tsconfig.json ./src/index.ts",
     "check": "tsc -p tsconfig.json --noEmit"
   },
   "bugs": {
