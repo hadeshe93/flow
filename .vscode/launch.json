@@ -1,0 +1,40 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "[flow] Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/cbs/xcode/flow/node_modules/ts-node/dist/bin.js",
+      "runtimeArgs": [
+        "-P",
+        "/cbs/xcode/flow/packages/core/tsconfig.json",
+        "/cbs/xcode/flow/packages/core/src/index.ts",
+        "spa:dev",
+        "--cwd",
+        "/cbs/xcode/webpack5-starter/packages/webpack5-vue3",
+        "--pageName",
+        "demo1"
+      ],
+      "env": {
+        "DEBUG": "@hadeshe93/*",
+        "RUN": "1"
+      }
+    },
+    {
+      "name": "[flow] Run Debug Script",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter=@hadeshe93/flow",
+        "run",
+        "debug"
+      ],
+      "stopOnEntry": true,
+    }
+  ]
+}

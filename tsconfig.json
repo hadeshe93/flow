@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "sourceMap": true,
+    // 生成声明文件
+    // "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "target": "ES2018",
+    "module": "CommonJS",
+    "lib": ["ES2018"],
+    "moduleResolution": "node",
+    "allowJs": true,
+    "checkJs": true,
+    // "strict": true,
+    "noUnusedLocals": true,
+    "experimentalDecorators": true /* 启用实验性的ES装饰器. */,
+    "emitDecoratorMetadata": true /* 给源码里的装饰器声明加上设计类型元数据. */,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": false,
+    // 默认会查找 node_modules/@types 下的，不需要配置白名单
+    // "types": ["node", "jest"],
+    "rootDir": ".",
+    "paths": {
+      "@/*": ["src/*"]
+      // "@vue/*": ["packages/*/src"],
+      // "vue": ["packages/vue/src"]
+    },
+    "skipLibCheck": true
+  }
+  // "include": [
+  //   // "packages/global.d.ts",
+  //   // "packages/*/src",
+  //   // "packages/*/__tests__"
+  // ]
+}

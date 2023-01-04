@@ -1,0 +1,32 @@
+{
+  "name": "@hadeshe93/flow-groups",
+  "private": true,
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cross-env NODE_ENV=production esno scripts/build/build-packages.ts",
+    "turbo:build": "turbo run build --filter=./packages/*",
+    "changeset": "changeset",
+    "version": "changeset version && pnpm install --no-frozen-lockfile && git add .",
+    "ci:publish": "changeset publish"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ]
+  },
+  "keywords": [],
+  "author": "hadeshe",
+  "engines": {
+    "node": ">=14"
+  },
+  "packageManager": "pnpm@7.3.0",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}
