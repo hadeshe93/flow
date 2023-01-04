@@ -45,6 +45,9 @@ export class Initiator extends Interactor {
 
     await this.logger.ing('Downloading template ...', () => downloadGitRepo(frameworkConfig.repoUrl, destTplRepoPath));
     await fsExtra.copy(this.ctx.destTplRealPath, this.ctx.dest);
+    this.logger.log();
+    this.logger.info(`Please excute following instructions to install dependencies:`);
+    this.logger.info(`  cd ${this.ctx.appName} && pnpm install`);
   }
   async end() {
     await fsExtra.remove(this.ctx.destTplRepoPath);
