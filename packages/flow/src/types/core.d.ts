@@ -1,4 +1,3 @@
-
 export interface PluginDetail {
   name: string;
   absolutePath: string;
@@ -13,7 +12,7 @@ export interface FlowConfiguration {
   plugins: PluginDetail[];
 }
 
-export interface ApplyPluginContext<TLogger, TCommander, TConfiguration, TInitiatorManager extends any = any> {
+export interface ApplyPluginContext<TLogger, TCommander, TConfiguration, TInitiatorManager> {
   logger: TLogger;
   commander: TCommander;
   configuration: TConfiguration;

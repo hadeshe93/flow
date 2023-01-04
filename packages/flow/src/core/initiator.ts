@@ -27,7 +27,7 @@ export class InitiatorManager {
    * 注册一个脚手架模板
    *
    * @param {InitiatorDetail} initiatorDetail
-   * @returns {*} 
+   * @returns {*}
    * @memberof InitiatorManager
    */
   register(initiatorDetail: InitiatorDetail) {

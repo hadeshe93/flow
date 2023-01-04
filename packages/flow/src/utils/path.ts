@@ -12,10 +12,10 @@ export function getResolve(projectRootPath: string): (...pathnameList: string[])
 }
 
 /**
- * 获取本 flow 项目的根路径 
+ * 获取本 flow 项目的根路径
  *
  * @export
- * @returns {*} 
+ * @returns {*}
  */
 export function getFlowRootDir() {
   return path.resolve(__dirname, '../../');

@@ -1,0 +1,37 @@
+{
+  "root": true,
+  "env": {
+    // "browser": true,
+    "node": true,
+    "es6": true
+    // mocha: true,
+    // jest: true,
+    // jquery: true
+  },
+  "globals": {},
+  "ignorePatterns": ["dist/"],
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
+  "plugins": [],
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "overrides": [
+    {
+      "files": "*.ts",
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 8,
+        "sourceType": "module",
+        "project": ["./packages/**/tsconfig.json", "./tsconfig.json"]
+      },
+      "plugins": ["@typescript-eslint", "eslint-plugin-tsdoc"],
+      "extends": ["plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# https://typicode.github.io/husky/#/?id=husky_git_params-ie-commitlint-
+pnpm commitlint --edit $1

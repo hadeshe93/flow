@@ -12,7 +12,7 @@ type ProxiedPropertyMap<T, K extends keyof T, O> = {
  * @template R
  * @template ExtraOptions
  * @param {ProxiedPropertyMap<InstanceClass, R, ExtraOptions>} proxiedProperties
- * @returns {*} 
+ * @returns {*}
  */
 export function createSandboxInstanceCreator<InstanceClass, R extends keyof InstanceClass, ExtraOptions>(
   proxiedProperties: ProxiedPropertyMap<InstanceClass, R, ExtraOptions>,
