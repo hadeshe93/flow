@@ -47,7 +47,7 @@ export class Commander {
     this.program.name(CLI_NAME).usage('<command> [options]').version(packageJson.version);
     this.program.on('--help', () => {
       this.logger.log('');
-      this.logger.log(`  Run ${CLI_NAME} <command> --help for detailed usage of given command.`);
+      this.logger.log(`Run ${CLI_NAME} <command> --help for detailed usage of given command.`);
     });
   }
 

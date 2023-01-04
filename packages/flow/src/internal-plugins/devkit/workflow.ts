@@ -22,7 +22,7 @@ type OptionsForRunningWorkflow = BaseOptionsForRunningWorkflow & {
   region?: string;
 };
 
-interface WorkflowManagerCtx {
+interface WorkflowCtx {
   projectRootPath: string;
   projectPagesPath: string;
   options: OptionsForRunningWorkflow;
@@ -44,8 +44,8 @@ interface OptionsForDeploy {
 
 export const OSS_ROOT_DIR = '/flow';
 
-export class WorkflowManager extends Interactor {
-  ctx: WorkflowManagerCtx = {
+export class Workflow extends Interactor {
+  ctx: WorkflowCtx = {
     projectRootPath: '',
     projectPagesPath: '',
     options: {},
@@ -66,7 +66,7 @@ export class WorkflowManager extends Interactor {
   async prompt(enquirer: typeof import('enquirer')): Promise<void> {
     const { options } = this.ctx;
 
-    if (options.command === 'spa:deploy') {
+    if (options.command === 'deploy') {
       await this.ensureDeploymentAccess(options, enquirer);
     }
 
@@ -90,11 +90,11 @@ export class WorkflowManager extends Interactor {
   async act(): Promise<void> {
     const { options } = this.ctx;
     const { command } = options;
-    if (command === 'spa:dev' || command === 'spa:build') {
+    if (command === 'dev' || command === 'build') {
       await this.bootstrapBuilder();
       return;
     }
-    if (command === 'spa:deploy') {
+    if (command === 'deploy') {
       await this.deploy({
         accessKeyId: options.accessKeyId,
         accessKeySecret: options.accessKeySecret,
@@ -109,19 +109,18 @@ export class WorkflowManager extends Interactor {
    * 启动 builder
    *
    * @private
-   * @memberof WorkflowManager
+   * @memberof Workflow
    */
   private async bootstrapBuilder() {
     const { projectRootPath, projectPagesPath, options } = this.ctx;
     const { command, pageName } = options;
     let mode = '' as SupportedBuilderMode;
-    if (command === 'spa:dev') {
+    if (command === 'dev') {
       mode = 'development';
-    } else if (command === 'spa:build') {
+    } else if (command === 'build') {
       mode = 'production';
     } else {
-      this.logger.error(`Command '${command}' is not allowed.`);
-      process.exit(1);
+      throw new Error(`Command '${command}' is not allowed.`);
     }
     const projectConfigPath = path.resolve(projectPagesPath, pageName, './project.config.js');
     const builderConfig: BuilderConfig = formatBuilderConfig({
@@ -148,7 +147,7 @@ export class WorkflowManager extends Interactor {
    * @private
    * @param {OptionsForRunningWorkflow} options
    * @param {typeof import('enquirer')} enquirer
-   * @memberof WorkflowManager
+   * @memberof Workflow
    */
   private async ensureDeploymentAccess(options: OptionsForRunningWorkflow, enquirer: typeof import('enquirer')) {
     const needResetAccess = options['reset'] || false;

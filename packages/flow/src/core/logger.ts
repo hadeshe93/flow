@@ -10,7 +10,12 @@ export class Logger {
 
   log(...args: any) {
     const msg = format.apply(format, args);
-    console.log(chalk.white(' '), msg);
+    console.log(' ', msg);
+  }
+
+  info(...args: any) {
+    const msg = format.apply(format, args);
+    console.log(chalk.cyan('ℹ'), chalk.cyan(msg));
   }
 
   error(...args: any) {

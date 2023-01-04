@@ -5,19 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "[flow] Debug",
+      "name": "[flow] Debug Help",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "/cbs/xcode/flow/node_modules/ts-node/dist/bin.js",
       "runtimeArgs": [
         "-P",
-        "/cbs/xcode/flow/packages/core/tsconfig.json",
-        "/cbs/xcode/flow/packages/core/src/index.ts",
-        "spa:dev",
-        "--cwd",
-        "/cbs/xcode/webpack5-starter/packages/webpack5-vue3",
-        "--pageName",
-        "demo1"
+        "/cbs/xcode/flow/packages/flow/tsconfig.json",
+        "/cbs/xcode/flow/packages/flow/src/index.ts",
+        "help"
       ],
       "env": {
         "DEBUG": "@hadeshe93/*",
@@ -25,14 +21,14 @@
       }
     },
     {
-      "name": "[flow] Run Debug Script",
+      "name": "[flow] Debug Dev",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": [
         "--filter=@hadeshe93/flow",
         "run",
-        "debug"
+        "debug:dev"
       ],
       "stopOnEntry": true,
     }

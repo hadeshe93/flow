@@ -1,13 +1,12 @@
-import { logger } from './logger';
 import execa = require('execa');
-
+import { logger } from './logger';
 import { PluginDetail } from '../types/core';
 import { configuration } from './configuration';
 import { getFlowRootDir } from '../utils/path';
 
 interface InstallOptions {
   absolutePath?: string;
-  fromLocal?: boolean;
+  fromInternal?: boolean;
 }
 
 export class Plugger {
@@ -23,6 +22,13 @@ export class Plugger {
     });
   }
 
+  /**
+   * 安装 npm 包
+   *
+   * @private
+   * @param {string} rawPkgName
+   * @memberof Plugger
+   */
   private async installPkg(rawPkgName: string) {
     try {
       const flowRootDir = getFlowRootDir();
@@ -40,8 +46,8 @@ export class Plugger {
    * @param {InstallOptions} [options]
    * @memberof Plugger
    */
-  async install(rawPkgName: string, options?: InstallOptions) {
-    if (!options?.fromLocal) {
+  public async install(rawPkgName: string, options?: InstallOptions) {
+    if (!options?.fromInternal) {
       await this.installPkg(rawPkgName);
     }
 
@@ -62,8 +68,44 @@ export class Plugger {
     const absolutePath = options?.absolutePath || require.resolve(name);
     pluginDetail.absolutePath = absolutePath;
     pluginDetail.config = pluginDetail.config ?? {};
+    pluginDetail.fromInternal = options?.fromInternal || false;
     // 回写
     this.pluginsMap.set(name, pluginDetail);
+
+    // 回写配置文件进行固化
+    this.configuration.data.plugins = [...this.pluginsMap.values()];
+    await this.configuration.save();
+  }
+
+  /**
+   * 针对缓存的配置信息，避免运行出错
+   *
+   * @memberof Plugger
+   */
+  public async doctor() {
+    const invalidInternalPlugins = [];
+    // 检查失效的内部插件
+    [...this.pluginsMap.entries()].forEach(([pluginName, pluginDetail]) => {
+      let isPluginExisting = true;
+      try {
+        require.resolve(pluginDetail.absolutePath);
+      } catch (err) {
+        isPluginExisting = false;
+      }
+      if (!isPluginExisting) {
+        invalidInternalPlugins.push(pluginName);
+        logger.warn(
+          `[plugger.doctor] ${
+            pluginDetail.fromInternal ? 'Internal plugin' : 'Plugin'
+          } '${pluginName}' is not found, and it will be remove from configuration.`,
+        );
+      }
+    });
+
+    // 将无效的内部插件从配置中剔除
+    invalidInternalPlugins.forEach((pluginName) => {
+      this.pluginsMap.delete(pluginName);
+    });
 
     // 回写配置文件进行固化
     this.configuration.data.plugins = [...this.pluginsMap.values()];

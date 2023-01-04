@@ -34,7 +34,7 @@ export class Flow {
       absolutePath: path.resolve(pluginPath, 'index'),
     }));
     plugins.forEach((plugin) => {
-      plugger.install(plugin.pluginName, { absolutePath: plugin.absolutePath, fromLocal: true });
+      plugger.install(plugin.pluginName, { absolutePath: plugin.absolutePath, fromInternal: true });
     });
   }
 
@@ -44,6 +44,8 @@ export class Flow {
    * @memberof Flow
    */
   private async init() {
+    // 先运行检查命令
+    await plugger.doctor();
     // 「安装」内部插件
     this.installInternalPlugins();
 

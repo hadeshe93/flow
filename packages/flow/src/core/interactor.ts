@@ -53,7 +53,6 @@ export abstract class Interactor {
       await this.prompt?.(this.enquirer);
       await this.act?.(this.fs);
       await this.end?.();
-      this.logger.success('Done! Enjoy it~');
     } catch (err) {
       await this.onError?.(err);
     }

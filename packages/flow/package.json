@@ -21,7 +21,9 @@
     "url": "git+https://github.com/hadeshe93/flow.git"
   },
   "scripts": {
-    "debug": "cross-env DEBUG=* RUN=1 ts-node -P ./tsconfig.json ./src/index.ts spa:dev --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3 --pageName demo1",
+    "debug:init": "cross-env DEBUG=@hadeshe93/* RUN=1 ts-node -P ./tsconfig.json ./src/index.ts init",
+    "debug:dev": "cross-env DEBUG=@hadeshe93/* RUN=1 ts-node -P ./tsconfig.json ./src/index.ts dev --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3 --pageName demo1",
+    "debug:help": "RUN=1 ts-node -P ./tsconfig.json ./src/index.ts --help",
     "build": "cross-env NODE_ENV=production tsc -p tsconfig.json",
     "showconfig": "ts-node -P ./tsconfig.json --showConfig",
     "dev:flow": "cross-env DEBUG=vice* RUN=1 ts-node -P ./tsconfig.json ./src/index.ts",
@@ -31,6 +33,8 @@
     "url": "https://github.com/hadeshe93/flow/issues"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.18",
     "typescript": "^4.9.4"
   },
@@ -48,6 +52,7 @@
     "execa": "^5.0.0",
     "fs-extra": "^11.1.0",
     "glob": "^8.0.3",
+    "lodash": "^4.17.21",
     "mem-fs": "^2.2.1",
     "mem-fs-editor": "^9.5.0",
     "minimist": "^1.2.7",
