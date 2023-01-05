@@ -8,6 +8,7 @@ import BuilderWebpack from '@hadeshe93/builder-webpack';
 import { Interactor } from '../../core/interactor';
 import { getAliyunOssOper } from '../../utils/aliyun-oss';
 import { getInternalPluginName } from '../../utils/plugin';
+import { commandsOptionMap, builderModeMap } from './constants/configs';
 
 type BaseOptionsForRunningWorkflow = {
   command?: string;
@@ -66,7 +67,7 @@ export class Workflow extends Interactor {
   async prompt(enquirer: typeof import('enquirer')): Promise<void> {
     const { options } = this.ctx;
 
-    if (options.command === 'deploy') {
+    if (options.command === commandsOptionMap.deploy.command) {
       await this.ensureDeploymentAccess(options, enquirer);
     }
 
@@ -90,11 +91,13 @@ export class Workflow extends Interactor {
   async act(): Promise<void> {
     const { options } = this.ctx;
     const { command } = options;
-    if (command === 'dev' || command === 'build') {
+    // 调试或构建
+    if ([commandsOptionMap.dev.command, commandsOptionMap.build.command].includes(command)) {
       await this.bootstrapBuilder();
       return;
     }
-    if (command === 'deploy') {
+    // 部署
+    if (commandsOptionMap.deploy.command === command) {
       await this.deploy({
         accessKeyId: options.accessKeyId,
         accessKeySecret: options.accessKeySecret,
@@ -114,14 +117,12 @@ export class Workflow extends Interactor {
   private async bootstrapBuilder() {
     const { projectRootPath, projectPagesPath, options } = this.ctx;
     const { command, pageName } = options;
-    let mode = '' as SupportedBuilderMode;
-    if (command === 'dev') {
-      mode = 'development';
-    } else if (command === 'build') {
-      mode = 'production';
-    } else {
+    const mode = builderModeMap[command] as SupportedBuilderMode;
+    if (!mode) {
       throw new Error(`Command '${command}' is not allowed.`);
     }
+
+    // 构建配置
     const projectConfigPath = path.resolve(projectPagesPath, pageName, './project.config.js');
     const builderConfig: BuilderConfig = formatBuilderConfig({
       mode,
@@ -132,10 +133,13 @@ export class Workflow extends Interactor {
         ...require(projectConfigPath),
       },
     });
+    // 实例化核心 builder
     const builder = new BuilderCore({
       logger: this.logger,
     });
+    // 实例化 webpack builder
     const webpackBuilder = new BuilderWebpack();
+    // 注册 webpack builder
     builder.registerBuilder('webpack', webpackBuilder);
     const excutor = builder.createExcutor([builderConfig]);
     await excutor();

@@ -32,8 +32,7 @@ export const templateFrameworkConfigs: TemplateFrameworkConfig[] = [
 ];
 
 // 插件命令配置
-// 公共参数
-const COMMON_OPTION_MAP = {
+const commonCommandOption = {
   cwd: {
     description: 'Specify current working directory',
     valueName: 'path',
@@ -45,7 +44,7 @@ export const commandsOptions = [
     command: 'dev',
     description: 'Develope page of project',
     optionMap: {
-      ...COMMON_OPTION_MAP,
+      ...commonCommandOption,
       pageName: {
         description: 'Specify the name of page',
         valueName: 'pageName',
@@ -57,7 +56,7 @@ export const commandsOptions = [
     command: 'build',
     description: 'Build page of project',
     optionMap: {
-      ...COMMON_OPTION_MAP,
+      ...commonCommandOption,
       pageName: {
         description: 'Specify the name of page',
         valueName: 'pageName',
@@ -78,7 +77,7 @@ export const commandsOptions = [
       ],
     ] as any,
     optionMap: {
-      ...COMMON_OPTION_MAP,
+      ...commonCommandOption,
       reset: {
         description: 'Reset configs of aliyun oss',
       },
@@ -102,3 +101,9 @@ export const commandsOptions = [
   },
 ];
 export const commandsOptionMap = keyBy(commandsOptions, (option) => option.command);
+
+// 构建器模式映射表
+export const builderModeMap = {
+  [commandsOptionMap.dev.command]: 'development',
+  [commandsOptionMap.build.command]: 'production',
+};
