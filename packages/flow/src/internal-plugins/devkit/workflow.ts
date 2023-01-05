@@ -213,7 +213,14 @@ export class Workflow extends Interactor {
     options.region = region;
   }
 
-  async deploy(options: OptionsForDeploy) {
+  /**
+   * 部署
+   *
+   * @private
+   * @param {OptionsForDeploy} options
+   * @memberof Workflow
+   */
+  private async deploy(options: OptionsForDeploy) {
     const destDirPath = path.resolve(OSS_ROOT_DIR, path.basename(this.ctx.projectRootPath));
     const localDirPath = path.resolve(this.ctx.projectRootPath, 'dist');
     if (!(await fsExtra.pathExists(localDirPath))) throw new Error(`Path '${localDirPath}' does not exist.`);

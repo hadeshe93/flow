@@ -8,11 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./ --ext .ts,.js",
     "lint:fix": "npm run lint -- --fix",
-    "build": "cross-env NODE_ENV=production esno scripts/build/build-packages.ts",
     "turbo:build": "turbo run build --filter=./packages/*",
     "changeset": "changeset",
     "version": "changeset version && pnpm install --no-frozen-lockfile && git add .",
-    "ci:publish": "changeset publish",
+    "ci:publish": "changeset publish # Don not run in local",
     "prepare:husky": "husky install"
   },
   "lint-staged": {
@@ -47,5 +46,8 @@
     "prettier": "^2.8.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "turbo": "^1.6.3"
   }
 }

@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-const { ViceFlow } = require('./dist/index.js');
-new ViceFlow().run();
+const { Flow } = require('./dist/index.js');
+new Flow().run();
