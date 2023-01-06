@@ -8,7 +8,7 @@ import BuilderWebpack from '@hadeshe93/builder-webpack';
 import { Interactor } from '../../core/interactor';
 import { getAliyunOssOper } from '../../utils/aliyun-oss';
 import { getInternalPluginName } from '../../utils/plugin';
-import { commandsOptionMap, builderModeMap } from './constants/configs';
+import { commandsOptionMap, builderModeMap, PROJECT_CONFIG_NAME } from './constants/configs';
 
 type BaseOptionsForRunningWorkflow = {
   command?: string;
@@ -123,7 +123,7 @@ export class Workflow extends Interactor {
     }
 
     // 构建配置
-    const projectConfigPath = path.resolve(projectPagesPath, pageName, './project.config.js');
+    const projectConfigPath = path.resolve(projectPagesPath, pageName, `./${PROJECT_CONFIG_NAME}`);
     const builderConfig: BuilderConfig = formatBuilderConfig({
       mode,
       builderName: 'webpack',
