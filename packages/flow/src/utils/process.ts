@@ -1,3 +1,5 @@
+import { debug } from './debug';
+
 interface Logger {
   log: (...args: any[]) => any;
   error: (...args: any[]) => any;
@@ -5,11 +7,11 @@ interface Logger {
 
 export function init(logger: Logger = console) {
   // process.on('beforeExit', (code) => {
-  //   logger.log(`Code before process's exiting is ${code}`);
+  //   debug(`Code before process's exiting is ${code}`);
   // });
   process.on('exit', (code) => {
     if (code === 0) return;
-    logger.error(`Process exit code is ${code}`);
+    debug(`Process exit code is ${code}`);
   });
   process.on('uncaughtException', (err: any) => {
     logger.error('[Uncaught exception] Error', err);

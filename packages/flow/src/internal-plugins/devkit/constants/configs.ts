@@ -69,17 +69,12 @@ export const commandsOptions = [
   {
     command: 'deploy',
     description: 'Deploy page of project',
-    argumentList: [
-      [
-        'pageName',
-        {
-          description: 'The target page name',
-          required: false,
-        },
-      ],
-    ] as any,
     optionMap: {
       ...commonCommandOption,
+      pageName: {
+        description: 'Specify the name of page',
+        valueName: 'pageName',
+      },
       reset: {
         description: 'Reset configs of aliyun oss',
       },

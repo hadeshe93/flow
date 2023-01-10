@@ -1,10 +1,17 @@
 import glob from 'glob';
 import path from 'path';
+import rimraf from 'rimraf';
 import fsExtra from 'fs-extra';
 import { PAGES_RELATIVE_PATH } from '@hadeshe93/wpconfig-core';
-import BuilderCore, { formatBuilderConfig, BuilderConfig, SupportedBuilderMode } from '@hadeshe93/builder-core';
+import BuilderCore, {
+  formatBuilderConfig,
+  BuilderConfig,
+  BuilderCoreOptions,
+  SupportedBuilderMode,
+} from '@hadeshe93/builder-core';
 import BuilderWebpack from '@hadeshe93/builder-webpack';
 
+import { debug } from '../../utils/debug';
 import { Interactor } from '../../core/interactor';
 import { getAliyunOssOper } from '../../utils/aliyun-oss';
 import { getInternalPluginName } from '../../utils/plugin';
@@ -43,6 +50,13 @@ interface OptionsForDeploy {
   region: string;
 }
 
+interface BootstrapBuilderOptions {
+  projectRootPath: string;
+  command: string;
+  pageName: string;
+  logger?: BuilderCoreOptions['logger'];
+}
+
 export const OSS_ROOT_DIR = '/flow';
 
 export class Workflow extends Interactor {
@@ -60,7 +74,7 @@ export class Workflow extends Interactor {
       process.chdir(projectRootPath);
     }
     this.ctx.projectRootPath = projectRootPath;
-    this.ctx.projectPagesPath = path.resolve(projectRootPath, PAGES_RELATIVE_PATH);
+    this.ctx.projectPagesPath = resolveProjectPagesPath(projectRootPath);
     this.ctx.options = options;
   }
 
@@ -89,15 +103,26 @@ export class Workflow extends Interactor {
   }
 
   async act(): Promise<void> {
-    const { options } = this.ctx;
+    const { projectRootPath, options } = this.ctx;
     const { command } = options;
     // 调试或构建
     if ([commandsOptionMap.dev.command, commandsOptionMap.build.command].includes(command)) {
-      await this.bootstrapBuilder();
+      await this.bootstrapBuilder({
+        projectRootPath,
+        pageName: options.pageName,
+        command,
+      });
       return;
     }
     // 部署
     if (commandsOptionMap.deploy.command === command) {
+      // 先执行 build
+      await this.bootstrapBuilder({
+        projectRootPath,
+        pageName: options.pageName,
+        command: commandsOptionMap.build.command,
+      });
+      // 再执行部署
       await this.deploy({
         accessKeyId: options.accessKeyId,
         accessKeySecret: options.accessKeySecret,
@@ -108,41 +133,17 @@ export class Workflow extends Interactor {
     }
   }
 
-  /**
-   * 启动 builder
-   *
-   * @private
-   * @memberof Workflow
-   */
-  private async bootstrapBuilder() {
-    const { projectRootPath, projectPagesPath, options } = this.ctx;
-    const { command, pageName } = options;
-    const mode = builderModeMap[command] as SupportedBuilderMode;
-    if (!mode) {
-      throw new Error(`Command '${command}' is not allowed.`);
+  private bootstrapBuilder(options: BootstrapBuilderOptions) {
+    if (options.command === commandsOptionMap.build.command) {
+      // 如果是 build 命令，则需要先清理产物目录
+      const distPath = resolveProjectDistPath(this.ctx.projectRootPath);
+      rimraf.sync(distPath);
+      this.logger.success(`The dist directory has been clean successfully: ${distPath}`);
     }
-
-    // 构建配置
-    const projectConfigPath = path.resolve(projectPagesPath, pageName, `./${PROJECT_CONFIG_NAME}`);
-    const builderConfig: BuilderConfig = formatBuilderConfig({
-      mode,
-      builderName: 'webpack',
-      appProjectConfig: {
-        projectPath: projectRootPath,
-        pageName,
-        ...require(projectConfigPath),
-      },
-    });
-    // 实例化核心 builder
-    const builder = new BuilderCore({
+    return bootstrapBuilder({
       logger: this.logger,
+      ...options,
     });
-    // 实例化 webpack builder
-    const webpackBuilder = new BuilderWebpack();
-    // 注册 webpack builder
-    builder.registerBuilder('webpack', webpackBuilder);
-    const excutor = builder.createExcutor([builderConfig]);
-    await excutor();
   }
 
   /**
@@ -222,7 +223,8 @@ export class Workflow extends Interactor {
    */
   private async deploy(options: OptionsForDeploy) {
     const destDirPath = path.resolve(OSS_ROOT_DIR, path.basename(this.ctx.projectRootPath));
-    const localDirPath = path.resolve(this.ctx.projectRootPath, 'dist');
+    const localDirPath = resolveProjectDistPath(this.ctx.projectRootPath);
+    debug('Options for deployment show as below:\r\n%O', { ...options, destDirPath, localDirPath });
     if (!(await fsExtra.pathExists(localDirPath))) throw new Error(`Path '${localDirPath}' does not exist.`);
 
     try {
@@ -243,13 +245,58 @@ export class Workflow extends Interactor {
         },
       });
       if (failedList.length === 0) {
-        this.logger.success('All files have been deployed successfully~');
+        this.logger.success('All files have been deployed successfully');
+        this.logger.success(`You can access those files with prefix path "${destDirPath}"`);
       } else {
         this.logger.error('These files listed failed to be deployed.\r\n', JSON.stringify(failedList, undefined, 2));
       }
     } catch (err) {
-      this.logger.warn('Exception occurred in deploying:', err);
-      process.exit(1);
+      debug('[Deploy] Exception occurred in deploying. Error:', err);
+      throw new Error(`[Deploy] Exception occurred in deploying. Error: ${err.message}`);
     }
   }
+}
+
+/**
+ * 启动 builder
+ *
+ * @param {BootstrapBuilderOptions} options
+ */
+async function bootstrapBuilder(options: BootstrapBuilderOptions) {
+  const { projectRootPath, command, pageName, logger = console.log.bind(console) } = options;
+  const projectPagesPath = resolveProjectPagesPath(projectRootPath);
+  const mode = builderModeMap[command] as SupportedBuilderMode;
+  if (!mode) {
+    throw new Error(`Command '${command}' is not allowed.`);
+  }
+
+  // 构建配置
+  const projectConfigPath = path.resolve(projectPagesPath, pageName, `./${PROJECT_CONFIG_NAME}`);
+  const builderConfig: BuilderConfig = formatBuilderConfig({
+    mode,
+    builderName: 'webpack',
+    appProjectConfig: {
+      projectPath: projectRootPath,
+      pageName,
+      ...require(projectConfigPath),
+    },
+  });
+  // 实例化核心 builder
+  const builder = new BuilderCore({
+    logger: logger,
+  });
+  // 实例化 webpack builder
+  const webpackBuilder = new BuilderWebpack();
+  // 注册 webpack builder
+  builder.registerBuilder('webpack', webpackBuilder);
+  const excutor = builder.createExcutor([builderConfig]);
+  await excutor();
+}
+
+function resolveProjectPagesPath(projectRootPath: string) {
+  return path.resolve(projectRootPath, PAGES_RELATIVE_PATH);
+}
+
+function resolveProjectDistPath(projectRootPath: string) {
+  return path.resolve(projectRootPath, 'dist');
 }

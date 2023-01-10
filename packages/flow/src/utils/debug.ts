@@ -1,3 +1,4 @@
 import createDebug from 'debug';
+import { getPackageJSON } from './package-json';
 
-export const debug = createDebug('@hadeshe93/flow');
+export const debug = createDebug(getPackageJSON().name);

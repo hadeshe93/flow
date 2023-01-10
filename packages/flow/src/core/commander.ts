@@ -1,9 +1,7 @@
-import path from 'path';
-import fs from 'fs-extra';
 import minimist from 'minimist';
 import OriginalCommander from 'commander';
 import { logger } from './logger';
-import { getResolve } from '../utils/path';
+import { getPackageJSON } from '../utils/package-json';
 import { createSandboxInstanceCreator } from '../utils/sandbox';
 
 type CommandArgumentItem = [
@@ -42,8 +40,7 @@ export class Commander {
 
   private init() {
     const CLI_NAME = 'hh';
-    const rootResolve = getResolve(path.resolve(__dirname, '../../'));
-    const packageJson = fs.readJsonSync(rootResolve('package.json'));
+    const packageJson = getPackageJSON();
     this.program.name(CLI_NAME).usage('<command> [options]').version(packageJson.version);
     this.program.on('--help', () => {
       this.logger.log('');

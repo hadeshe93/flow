@@ -5,7 +5,7 @@ import { logger } from './core/logger';
 initProcess(logger);
 const FLAG = 'FLOW_RUN';
 if (process.env[FLAG]) {
-  logger.info(`[Index] Enviroment variable '${FLAG}' has been set`);
+  logger.info(`Enviroment variable '${FLAG}' has been set`);
   new Flow().run();
 }
 
