@@ -2,7 +2,7 @@ import execa = require('execa');
 import { logger } from './logger';
 import { PluginDetail } from '../types/core';
 import { configuration } from './configuration';
-import { getFlowRootDir } from '../utils/path';
+import { getFlowRootDir } from '../utils/resolve';
 
 interface InstallOptions {
   absolutePath?: string;

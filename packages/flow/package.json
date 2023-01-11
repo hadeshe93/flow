@@ -1,6 +1,6 @@
 {
   "name": "@hadeshe93/flow",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "A convenient development flow",
   "author": "hadeshe93 <hadeshe93@gmail.com>",
   "homepage": "https://github.com/hadeshe93/flow#readme",
@@ -25,6 +25,7 @@
     "debug:dev": "cross-env DEBUG=@hadeshe93/* FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts dev --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3 --pageName demo1",
     "debug:build": "cross-env DEBUG=@hadeshe93/* FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts build --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3 --pageName demo1",
     "debug:deploy": "cross-env DEBUG=@hadeshe93/* FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts deploy --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3 --pageName demo1",
+    "debug:patch": "cross-env DEBUG=@hadeshe93/* FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts patch --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3",
     "debug:help": "FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts --help",
     "bin:init": "cross-env DEBUG=@hadeshe93/* node ./bin.js init",
     "bin:dev": "cross-env DEBUG=@hadeshe93/* node ./bin.js dev --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3",

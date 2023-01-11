@@ -1,6 +1,6 @@
 import path from 'path';
 import fsExtra from 'fs-extra';
-import { getResolve } from './path';
+import { getResolve } from './resolve';
 
 const packageJSONMap = new Map();
 /**
