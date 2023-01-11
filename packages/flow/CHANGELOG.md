@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.2.1
+
+### Patch Changes
+
+- chore: 新增 patch 的项目
+
 ## 0.2.0
 
 ### Minor Changes

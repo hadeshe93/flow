@@ -19,6 +19,7 @@ export class Patcher extends Interactor {
     targetPath: '',
     preset: '',
     presetAbsPath: '',
+    logger: this.logger,
   };
 
   async initialize(options: PatcherOptions): Promise<void> {
