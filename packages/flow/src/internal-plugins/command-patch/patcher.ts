@@ -1,8 +1,9 @@
 import path from 'path';
+import fsExtra from 'fs-extra';
 import { debug } from '../../utils/debug';
 import { Interactor } from '../../core/interactor';
 import { resolveGlobModules, requireResolve } from '../../utils/resolve';
-import type { PatcherCtx } from './types/index';
+import type { PatcherCtx, PatcherUtils } from './types/index';
 
 type Enquirer = typeof import('enquirer');
 
@@ -11,20 +12,30 @@ interface PatcherOptions {
   preset: string;
 }
 
-const PRESET_ENTRY_FILE_NAME = 'index';
 const PRESETS_FOLDER_NAME = 'presets';
+const PRESET_ENTRY_FILE_NAME = 'index';
 
 export class Patcher extends Interactor {
   ctx: PatcherCtx = {
     targetPath: '',
     preset: '',
     presetAbsPath: '',
+  };
+  utils: PatcherUtils = {
+    debug,
     logger: this.logger,
   };
 
   async initialize(options: PatcherOptions): Promise<void> {
     this.ctx.targetPath = options.cwd || process.cwd();
     this.ctx.preset = options.preset;
+
+    const paramsForCreator = {
+      debug: this.utils.debug,
+      logger: this.utils.logger,
+    };
+    this.utils.copyAsset = createCopyAsset(this.ctx, paramsForCreator);
+    this.utils.writeAsset = createWriteAsset(this.ctx, paramsForCreator);
   }
 
   async prompt(enquirer: Enquirer): Promise<void> {
@@ -53,22 +64,62 @@ export class Patcher extends Interactor {
       throw new Error(`The preset "${this.ctx.preset}" is not found`);
     }
     this.ctx.presetAbsPath = presetAbsPath;
-    this.ctx.enquirer = enquirer;
+    this.utils.enquirer = enquirer;
   }
 
   async act(): Promise<void> {
     const theModule = require(this.ctx.presetAbsPath);
     const patchPreset = theModule?.default || theModule;
-    await patchPreset({
-      ...this.ctx,
-    });
+    await patchPreset(
+      {
+        ...this.ctx,
+      },
+      this.utils,
+    );
     this.logger.success('Patch done successfully');
   }
 }
 
+/**
+ * 获取 presets 列表
+ *
+ * @returns {*}  {ReturnType<typeof resolveGlobModules>}
+ */
 function getPresetList(): ReturnType<typeof resolveGlobModules> {
   return resolveGlobModules(path.resolve(__dirname, PRESETS_FOLDER_NAME, '*'), {
     entryFileName: PRESET_ENTRY_FILE_NAME,
     excludeInvalidModule: true,
   });
+}
+
+/**
+ * 创建拷贝资源的函数
+ *
+ * @param {PatcherCtx} ctx
+ * @param {(Pick<PatcherUtils, 'debug' | 'logger'>)} utils
+ * @returns {*}
+ */
+function createCopyAsset(ctx: PatcherCtx, utils: Pick<PatcherUtils, 'debug' | 'logger'>) {
+  return (src: string, dest: string) => {
+    debug(`[Patcher - ${ctx.preset} - copyAsset] src:`, src);
+    debug(`[Patcher - ${ctx.preset} - copyAsset] dest:`, dest);
+    fsExtra.copySync(src, dest);
+    utils.logger.success(`[Patch] Inject file "${path.basename(dest)}" successfully`);
+  };
+}
+
+/**
+ * 创建写入资源的函数
+ *
+ * @param {PatcherCtx} ctx
+ * @param {(Pick<PatcherUtils, 'debug' | 'logger'>)} utils
+ * @returns {*}
+ */
+function createWriteAsset(ctx: PatcherCtx, utils: Pick<PatcherUtils, 'debug' | 'logger'>) {
+  return (fileContent: string, dest: string) => {
+    debug(`[Patcher - ${ctx.preset} - writeAsset] fileContent:`, fileContent);
+    debug(`[Patcher - ${ctx.preset} - writeAsset] dest:`, dest);
+    fsExtra.writeFileSync(dest, fileContent, { encoding: 'utf-8' });
+    utils.logger.success(`[Patch] Inject file "${path.basename(dest)}" successfully`);
+  };
 }

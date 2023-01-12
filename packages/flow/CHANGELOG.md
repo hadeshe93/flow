@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.2.2
+
+### Patch Changes
+
+- 丰富 patch 预置项
+
 ## 0.2.1
 
 ### Patch Changes

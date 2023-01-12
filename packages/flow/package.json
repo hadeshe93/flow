@@ -1,6 +1,6 @@
 {
   "name": "@hadeshe93/flow",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A convenient development flow",
   "author": "hadeshe93 <hadeshe93@gmail.com>",
   "homepage": "https://github.com/hadeshe93/flow#readme",
@@ -58,6 +58,7 @@
     "execa": "^5.0.0",
     "fs-extra": "^11.1.0",
     "glob": "^8.0.3",
+    "jsonc": "^2.0.0",
     "lodash": "^4.17.21",
     "mem-fs": "^2.2.1",
     "mem-fs-editor": "^9.5.0",
