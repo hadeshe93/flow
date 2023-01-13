@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.2.5
+
+### Patch Changes
+
+- 修复构建时没有赋值资源文件到产出目录的问题
+
 ## 0.2.4
 
 ### Patch Changes

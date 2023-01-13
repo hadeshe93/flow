@@ -1,6 +1,6 @@
 {
   "name": "@hadeshe93/flow",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A convenient development flow",
   "author": "hadeshe93 <hadeshe93@gmail.com>",
   "homepage": "https://github.com/hadeshe93/flow#readme",
@@ -30,7 +30,7 @@
     "bin:init": "cross-env DEBUG=@hadeshe93/* node ./bin.js init",
     "bin:dev": "cross-env DEBUG=@hadeshe93/* node ./bin.js dev --cwd /cbs/xcode/webpack5-starter/packages/webpack5-vue3",
     "build": "rimraf ./dist && cross-env NODE_ENV=production tsc -p tsconfig.json && pnpm run copy:assets",
-    "copy:assets": "copyfiles -u 1 src/**/*.example dist",
+    "copy:assets": "copyfiles -u 1 -a src/**/*.example dist",
     "showconfig": "ts-node -P ./tsconfig.json --showConfig",
     "check": "tsc -p tsconfig.json --noEmit"
   },
