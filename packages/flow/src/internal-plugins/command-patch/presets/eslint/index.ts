@@ -31,22 +31,6 @@ export default async function (ctx: PatcherCtx, utils: PatcherUtils) {
     }, {} as { [key: string]: boolean });
   }
 
-  // 处理 parser
-  const answerParser = answerMap.get('parser');
-  if (answerParser === 'default') {
-    delete eslintJSON.parser;
-  } else {
-    eslintJSON.parser = answerParser;
-  }
-
-  // 处理 overrides 中的 .ts 文件
-  const answerShouldLintTypeScript = answerMap.get('shouldLintTypeScript');
-  if (!answerShouldLintTypeScript) {
-    const targetIndex = eslintJSON.overrides.findIndex((overrideItem) => overrideItem.files.includes('*.ts'));
-    if (targetIndex >= 0) {
-      eslintJSON.overrides.splice(targetIndex, 1);
-    }
-  }
   debug(`[Patcher - ${ctx.preset}] answers:%O`, [...answerMap.entries()]);
   debug(`[Patcher - ${ctx.preset}] eslintJSON:%O`, eslintJSON);
 
@@ -72,8 +56,12 @@ export default async function (ctx: PatcherCtx, utils: PatcherUtils) {
   );
 
   // 信息提示和指引
-  logger.info('According to the last eslint config, you may need to install these devDependencies:');
+  logger.info('According to the last config, you should ensure you have installed these as devDependencies:');
   devDependencies.forEach((devDep) => {
     logger.info(` - ${devDep}`);
   });
+  logger.info(`Last but not least, you can implement these configs in your package.json:`);
+  logger.info(`1. Set scripts.lint as "eslint ./"`);
+  logger.info(`2. Add "lint-staged": { "*.(ts|js)": ["eslint --fix"] }`);
+  logger.info(`3. Excute "pnpm dlx husky add .husky/pre-commit 'npx lint-staged'" }`);
 }

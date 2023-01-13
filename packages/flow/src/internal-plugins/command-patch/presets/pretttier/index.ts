@@ -19,4 +19,7 @@ export default function (ctx: PatcherCtx, utils: PatcherUtils) {
   ASSETS_TO_COPY.forEach((info) => {
     utils.copyAsset(info.src, info.dest);
   });
+
+  // 信息提示和指引
+  utils.logger.info('At last, please ensure you have installed "prettier" as devDependencies');
 }

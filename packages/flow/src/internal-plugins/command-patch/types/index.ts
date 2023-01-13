@@ -1,4 +1,5 @@
 import Debug from 'debug';
+import execa from 'execa';
 import type { Logger } from '../../../core/logger';
 type Enquirer = typeof import('enquirer');
 
@@ -16,6 +17,8 @@ export interface PatcherUtils {
   debug: Debug;
   // logger
   logger: Logger;
+  // execa
+  execa: typeof execa;
   // 传递下去给不同周期使用的 enquirer
   enquirer?: Enquirer;
   // 拷贝 asset 文件的函数

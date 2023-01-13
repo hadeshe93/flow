@@ -43,11 +43,20 @@ export class Logger {
       color: 'cyan',
     }).start();
     if (func instanceof Function) {
-      const promise = func(sipnner);
-      if (promise instanceof Promise) {
-        return promise.then(() => sipnner.stop()).catch(() => sipnner.stop());
-      } else {
-        return sipnner.stop();
+      try {
+        const promise = func(sipnner);
+        if (promise instanceof Promise) {
+          return promise
+            .then(() => sipnner.succeed())
+            .catch((err) => {
+              sipnner.fail();
+              throw err;
+            });
+        } else {
+          return sipnner.stop();
+        }
+      } catch (err) {
+        return sipnner.fail();
       }
     } else {
       return sipnner;

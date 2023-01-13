@@ -1,4 +1,5 @@
 import path from 'path';
+import execa from 'execa';
 import fsExtra from 'fs-extra';
 import { debug } from '../../utils/debug';
 import { Interactor } from '../../core/interactor';
@@ -23,11 +24,19 @@ export class Patcher extends Interactor {
   };
   utils: PatcherUtils = {
     debug,
+    execa,
     logger: this.logger,
   };
 
   async initialize(options: PatcherOptions): Promise<void> {
-    this.ctx.targetPath = options.cwd || process.cwd();
+    const processCwd = process.cwd();
+    // 可以通过传入 cwd 来改变执行路径，以方便调试
+    const targetPath = options.cwd || processCwd;
+    if (targetPath !== processCwd) {
+      process.chdir(targetPath);
+    }
+
+    this.ctx.targetPath = targetPath;
     this.ctx.preset = options.preset;
 
     const paramsForCreator = {
