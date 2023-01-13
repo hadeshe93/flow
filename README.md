@@ -35,6 +35,13 @@ $ hh build
 $ hh deploy
 ```
 
+## Patch project
+
+```bash
+# Patch basic tools for project
+$ hh patch
+```
+
 ## Update the cli
 
 ```bash
