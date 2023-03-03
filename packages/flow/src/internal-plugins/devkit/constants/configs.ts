@@ -5,7 +5,7 @@ import type { TemplateFrameworkConfig } from '../types/config';
 export const PROJECT_CONFIG_NAME = 'project.config.js';
 
 // 项目模板配置
-const TEMPLATE_MONOREPO_URL = 'github:hadeshe93/webpack5-starter';
+const TEMPLATE_MONOREPO_URL = 'github:hadeshe93/web-project-starter';
 export const templateFrameworkConfigs: TemplateFrameworkConfig[] = [
   {
     templateType: 'vue3',
