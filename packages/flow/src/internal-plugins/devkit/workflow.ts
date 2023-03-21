@@ -2,24 +2,18 @@ import glob from 'glob';
 import path from 'path';
 import rimraf from 'rimraf';
 import fsExtra from 'fs-extra';
-import { PAGES_RELATIVE_PATH } from '@hadeshe93/wpconfig-core';
-import BuilderCore, {
-  formatBuilderConfig,
-  BuilderConfig,
-  BuilderCoreOptions,
-  SupportedBuilderMode,
-} from '@hadeshe93/builder-core';
-import BuilderWebpack from '@hadeshe93/builder-webpack';
 
 import { debug } from '../../utils/debug';
 import { Interactor } from '../../core/interactor';
 import { getAliyunOssOper } from '../../utils/aliyun-oss';
 import { getInternalPluginName } from '../../utils/plugin';
-import { commandsOptionMap, builderModeMap, PROJECT_CONFIG_NAME } from './constants/configs';
+import { bootstrapBuilder, SUPPORTED_BUILDERS, BootstrapBuilderOptions } from './utils/builder';
+import { commandsOptionMap, PAGES_RELATIVE_PATH } from './constants/configs';
 
 type BaseOptionsForRunningWorkflow = {
   command?: string;
   pageName?: string;
+  builderName?: string;
   cwd?: string;
 };
 
@@ -50,13 +44,6 @@ interface OptionsForDeploy {
   region: string;
 }
 
-interface BootstrapBuilderOptions {
-  projectRootPath: string;
-  command: string;
-  pageName: string;
-  logger?: BuilderCoreOptions['logger'];
-}
-
 export const OSS_ROOT_DIR = '/flow';
 
 export class Workflow extends Interactor {
@@ -85,7 +72,7 @@ export class Workflow extends Interactor {
       await this.ensureDeploymentAccess(options, enquirer);
     }
 
-    // 如果外界没有指定 pageName，那么可以提供用户去手动选择
+    // 如果外界没有指定 pageName，那么可以手动选择
     if (!options.pageName) {
       const pagesList = glob
         .sync(path.join(this.ctx.projectPagesPath, '/*'))
@@ -100,16 +87,30 @@ export class Workflow extends Interactor {
       const prompt = new enquirer['AutoComplete'](question);
       this.ctx.options.pageName = await prompt.run();
     }
+
+    // 如果外界没有指定 builderName，那么可以手动选择
+    if (!options.builderName) {
+      const question = {
+        name: 'builderName',
+        message: 'Please choose builder:',
+        limit: 10,
+        initial: 0,
+        choices: Object.keys(SUPPORTED_BUILDERS),
+      };
+      const prompt = new enquirer['AutoComplete'](question);
+      this.ctx.options.builderName = await prompt.run();
+    }
   }
 
   async act(): Promise<void> {
     const { projectRootPath, options } = this.ctx;
-    const { command } = options;
+    const { command, pageName, builderName } = options;
     // 调试或构建
     if ([commandsOptionMap.dev.command, commandsOptionMap.build.command].includes(command)) {
       await this.bootstrapBuilder({
-        projectRootPath,
-        pageName: options.pageName,
+        projectPath: projectRootPath,
+        pageName: pageName,
+        builderName,
         command,
       });
       return;
@@ -118,8 +119,9 @@ export class Workflow extends Interactor {
     if (commandsOptionMap.deploy.command === command) {
       // 先执行 build
       await this.bootstrapBuilder({
-        projectRootPath,
+        projectPath: projectRootPath,
         pageName: options.pageName,
+        builderName,
         command: commandsOptionMap.build.command,
       });
       // 再执行部署
@@ -255,42 +257,6 @@ export class Workflow extends Interactor {
       throw new Error(`[Deploy] Exception occurred in deploying. Error: ${err.message}`);
     }
   }
-}
-
-/**
- * 启动 builder
- *
- * @param {BootstrapBuilderOptions} options
- */
-async function bootstrapBuilder(options: BootstrapBuilderOptions) {
-  const { projectRootPath, command, pageName, logger = console.log.bind(console) } = options;
-  const projectPagesPath = resolveProjectPagesPath(projectRootPath);
-  const mode = builderModeMap[command] as SupportedBuilderMode;
-  if (!mode) {
-    throw new Error(`Command '${command}' is not allowed.`);
-  }
-
-  // 构建配置
-  const projectConfigPath = path.resolve(projectPagesPath, pageName, `./${PROJECT_CONFIG_NAME}`);
-  const builderConfig: BuilderConfig = formatBuilderConfig({
-    mode,
-    builderName: 'webpack',
-    appProjectConfig: {
-      projectPath: projectRootPath,
-      pageName,
-      ...require(projectConfigPath),
-    },
-  });
-  // 实例化核心 builder
-  const builder = new BuilderCore({
-    logger: logger,
-  });
-  // 实例化 webpack builder
-  const webpackBuilder = new BuilderWebpack();
-  // 注册 webpack builder
-  builder.registerBuilder('webpack', webpackBuilder);
-  const excutor = builder.createExcutor([builderConfig]);
-  await excutor();
 }
 
 function resolveProjectPagesPath(projectRootPath: string) {

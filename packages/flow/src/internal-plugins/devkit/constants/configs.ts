@@ -1,8 +1,11 @@
+import path from 'path';
 import keyBy from 'lodash/keyBy';
 import type { TemplateFrameworkConfig } from '../types/config';
 
 // 项目配置的文件名
 export const PROJECT_CONFIG_NAME = 'project.config.js';
+// 项目页面相对的路径
+export const PAGES_RELATIVE_PATH = path.join('src', 'pages');
 
 // 项目模板配置
 const TEMPLATE_MONOREPO_URL = 'github:hadeshe93/web-project-starter';
