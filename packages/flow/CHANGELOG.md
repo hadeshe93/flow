@@ -1,5 +1,15 @@
 # @hadeshe93/flow
 
+## 0.3.0
+
+### Minor Changes
+
+- 956ed15: flow 接入 builder-vite 并更新 builder 相关依赖
+
+### Patch Changes
+
+- 1ce0c2c: 修改模板仓库地址
+
 ## 0.2.5
 
 ### Patch Changes
