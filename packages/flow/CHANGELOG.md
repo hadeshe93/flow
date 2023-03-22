@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.3.1
+
+### Patch Changes
+
+- 68f3dd0: 接入 esbuildDynamicImport 动态导入能力
+
 ## 0.3.0
 
 ### Minor Changes
