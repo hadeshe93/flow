@@ -43,9 +43,9 @@ importers:
 
   packages/flow:
     specifiers:
-      '@hadeshe93/builder-core': ^0.2.8
-      '@hadeshe93/builder-vite': ^0.2.7
-      '@hadeshe93/builder-webpack': 0.2.8
+      '@hadeshe93/builder-core': ^0.2.10
+      '@hadeshe93/builder-vite': ^0.2.9
+      '@hadeshe93/builder-webpack': 0.2.10
       '@hadeshe93/lib-node': ^0.7.0
       '@hadeshe93/wpconfig-core': ^0.1.15
       '@types/fs-extra': ^9.0.13
@@ -71,9 +71,9 @@ importers:
       rimraf: ^3.0.2
       typescript: ^4.9.4
     dependencies:
-      '@hadeshe93/builder-core': 0.2.8
-      '@hadeshe93/builder-vite': 0.2.7_@types+node@18.11.18
-      '@hadeshe93/builder-webpack': 0.2.8
+      '@hadeshe93/builder-core': 0.2.10
+      '@hadeshe93/builder-vite': 0.2.9_@types+node@18.11.18
+      '@hadeshe93/builder-webpack': 0.2.10
       '@hadeshe93/lib-node': 0.7.0_debug@4.3.4
       '@hadeshe93/wpconfig-core': 0.1.15
       ali-oss: 6.17.1
@@ -3356,8 +3356,8 @@ packages:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
     dev: false
 
-  /@hadeshe93/builder-core/0.2.8:
-    resolution: {integrity: sha512-9bb7KCnjx3fhbENgzZqWUPQBwkHyLmz9votdZoQm7/+MQPHaYZBqidW19NRYcjwX3CoN6hFZjUCNTZVPWVw5kA==}
+  /@hadeshe93/builder-core/0.2.10:
+    resolution: {integrity: sha512-rZAcjSNaWFaYatkjp7vMh9gKxCtZatY4McnC0entdKAZ2qo5kCniW6ou+nIBoXXoV+ilNi+XRUAWHzPsUQIZ5w==}
     dependencies:
       '@babel/core': 7.21.3
       '@babel/plugin-proposal-decorators': 7.21.0_@babel+core@7.21.3
@@ -3395,10 +3395,10 @@ packages:
       - webpack-cli
     dev: false
 
-  /@hadeshe93/builder-vite/0.2.7_@types+node@18.11.18:
-    resolution: {integrity: sha512-jqWYgXah9g8MYsJpQ9Z1e4WubNDFAxZ334wL1Uay8cmych1HPNPb5E1eyv8LnQX3J16M4HJu6p4TF92JI4Gveg==}
+  /@hadeshe93/builder-vite/0.2.9_@types+node@18.11.18:
+    resolution: {integrity: sha512-BAfYPqbqGzNb6VeGmiR9MQUu55hwb8wt7Wh6dQbj8Q3WS6jtb29/YoUAFdGKAfRWiMUnCM6k+wc7WqJWJQanig==}
     dependencies:
-      '@hadeshe93/builder-core': 0.2.8
+      '@hadeshe93/builder-core': 0.2.10
       '@hadeshe93/vite-chain': 0.2.0_@types+node@18.11.18
       cheerio: 1.0.0-rc.12
       debug: 4.3.4
@@ -3429,15 +3429,15 @@ packages:
       - webpack-cli
     dev: false
 
-  /@hadeshe93/builder-webpack/0.2.8:
-    resolution: {integrity: sha512-gKuySoToWCxcepvMPbmFfbR0ET33fQB6MZR6Ybw787PB0o/rjbEuH58+KDT51E0zUQUHOGh/83miwuktRGN6bQ==}
+  /@hadeshe93/builder-webpack/0.2.10:
+    resolution: {integrity: sha512-TYH/yCcGngpHiSI4CiEed+0YRb0COaxNrl6gwVWYqBCqin9YsN5FCYsYb/aOz20wZf5Lhdm78PiZxvfKZNCm7A==}
     dependencies:
       '@babel/core': 7.21.3
       '@babel/plugin-transform-runtime': 7.21.0_@babel+core@7.21.3
       '@babel/preset-env': 7.20.2_@babel+core@7.21.3
       '@babel/preset-typescript': 7.21.0_@babel+core@7.21.3
       '@babel/runtime-corejs3': 7.21.0
-      '@hadeshe93/builder-core': 0.2.8
+      '@hadeshe93/builder-core': 0.2.10
       '@hadeshe93/lib-node': 0.8.0_debug@4.3.4
       add-asset-html-webpack-plugin: 5.0.2_evxfmcnm4hrwcmvo67nssroifq
       babel-loader: 8.3.0_h5x7dh6zbbyopr7jvxivhylqpa
@@ -5397,8 +5397,8 @@ packages:
       - supports-color
     dev: false
 
-  /bonjour-service/1.1.0:
-    resolution: {integrity: sha512-LVRinRB3k1/K0XzZ2p58COnWvkQknIY6sf0zF2rpErvcJXpMBttEPQSxK+HEXSS9VmpZlDoDnQWv8ftJT20B0Q==}
+  /bonjour-service/1.1.1:
+    resolution: {integrity: sha512-Z/5lQRMOG9k7W+FkeGTNjh7htqn/2LMnfOvBZ8pynNZCM9MwkQkI3zeI4oz09uWdcgmgHugVvBqxGg4VQJ5PCg==}
     dependencies:
       array-flatten: 2.1.2
       dns-equal: 1.0.0
@@ -5454,8 +5454,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001468
-      electron-to-chromium: 1.4.334
+      caniuse-lite: 1.0.30001469
+      electron-to-chromium: 1.4.335
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10_browserslist@4.21.5
     dev: false
@@ -5608,8 +5608,8 @@ packages:
     resolution: {integrity: sha512-OyxRR4Vof59I3yGWXws6i908EtGbMzVUi3ganaZQHmydk1iwDhRnvaPG2WaR0KcqrDFKrxVZHULT396LEPhXfg==}
     dev: false
 
-  /caniuse-lite/1.0.30001468:
-    resolution: {integrity: sha512-zgAo8D5kbOyUcRAgSmgyuvBkjrGk5CGYG5TYgFdpQv+ywcyEpo1LOWoG8YmoflGnh+V+UsNuKYedsoYs0hzV5A==}
+  /caniuse-lite/1.0.30001469:
+    resolution: {integrity: sha512-Rcp7221ScNqQPP3W+lVOYDyjdR6dC+neEQCttoNr5bAyz54AboB4iwpnWgyi8P4YUsPybVzT4LgWiBbI3drL4g==}
     dev: false
 
   /caseless/0.12.0:
@@ -6745,8 +6745,8 @@ packages:
     resolution: {integrity: sha512-M8WEXFuKXMYMVr45fo8mq0wUrrJHheiKZf6BArTKk9ZBYCKJEOU5H8cdWgDT+qCVZf7Na4lVUaZsA+h6uA9+PA==}
     dev: false
 
-  /electron-to-chromium/1.4.334:
-    resolution: {integrity: sha512-laZ1odk+TRen6q0GeyQx/JEkpD3iSZT7ewopCpKqg9bTjP1l8XRfU3Bg20CFjNPZkp5+NDBl3iqd4o/kPO+Vew==}
+  /electron-to-chromium/1.4.335:
+    resolution: {integrity: sha512-l/eowQqTnrq3gu+WSrdfkhfNHnPgYqlKAwxz7MTOj6mom19vpEDHNXl6dxDxyTiYuhemydprKr/HCrHfgk+OfQ==}
     dev: false
 
   /emittery/0.13.1:
@@ -9132,7 +9132,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.15.3
+      '@types/node': 18.15.5
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -13637,7 +13637,7 @@ packages:
       '@types/sockjs': 0.3.33
       '@types/ws': 8.5.4
       ansi-html-community: 0.0.8
-      bonjour-service: 1.1.0
+      bonjour-service: 1.1.1
       chokidar: 3.5.3
       colorette: 2.0.19
       compression: 1.7.4

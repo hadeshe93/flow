@@ -2,8 +2,9 @@ import path from 'path';
 import keyBy from 'lodash/keyBy';
 import type { TemplateFrameworkConfig } from '../types/config';
 
-// 项目配置的文件名
-export const PROJECT_CONFIG_NAME = 'project.config.js';
+// 项目配置的文件名，不带扩展名
+export const PROJECT_CONFIG_NAME = 'project.config';
+export const PROJECT_CONFIG_EXTS = ['.js', '.ts'];
 // 项目页面相对的路径
 export const PAGES_RELATIVE_PATH = path.join('src', 'pages');
 
@@ -42,6 +43,14 @@ const commonCommandOption = {
     description: 'Specify current working directory',
     valueName: 'path',
   },
+  pageName: {
+    description: 'Specify the name of page',
+    valueName: 'pageName',
+  },
+  builderName: {
+    description: 'Specify the name of builder',
+    valueName: 'builderName',
+  },
 };
 export const commandsOptions = [
   // 调试
@@ -50,10 +59,6 @@ export const commandsOptions = [
     description: 'Develope page of project',
     optionMap: {
       ...commonCommandOption,
-      pageName: {
-        description: 'Specify the name of page',
-        valueName: 'pageName',
-      },
     },
   },
   // 构建
@@ -62,10 +67,6 @@ export const commandsOptions = [
     description: 'Build page of project',
     optionMap: {
       ...commonCommandOption,
-      pageName: {
-        description: 'Specify the name of page',
-        valueName: 'pageName',
-      },
     },
   },
   // 部署
@@ -74,10 +75,6 @@ export const commandsOptions = [
     description: 'Deploy page of project',
     optionMap: {
       ...commonCommandOption,
-      pageName: {
-        description: 'Specify the name of page',
-        valueName: 'pageName',
-      },
       reset: {
         description: 'Reset configs of aliyun oss',
       },

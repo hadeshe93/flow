@@ -1,7 +1,8 @@
 import path from 'path';
+import fs from 'fs-extra';
 import BuilderCore, {
+  esbuildDynamicImport,
   formatBuilderConfig,
-  BuilderConfig,
   BuilderCoreOptions,
   SupportedBuilderMode,
   AbstractBuilder,
@@ -9,7 +10,7 @@ import BuilderCore, {
 import BuilderVite from '@hadeshe93/builder-vite';
 import BuilderWebpack from '@hadeshe93/builder-webpack';
 
-import { builderModeMap, PROJECT_CONFIG_NAME } from '../constants/configs';
+import { builderModeMap, PROJECT_CONFIG_NAME, PROJECT_CONFIG_EXTS } from '../constants/configs';
 import { resolveProjectPagesPath } from './resolve';
 
 export interface BootstrapBuilderOptions {
@@ -51,10 +52,21 @@ export async function bootstrapBuilder(options: BootstrapBuilderOptions) {
   }
   builder.logger = logger;
 
-  // 构建配置
-  const projectConfigPath = path.resolve(projectPagesPath, pageName, `./${PROJECT_CONFIG_NAME}`);
-  const projectConfig = require(projectConfigPath);
-  const builderConfig: BuilderConfig = formatBuilderConfig({
+  // 查找配置文件
+  let projectConfigPath = '';
+  for (const ext of PROJECT_CONFIG_EXTS) {
+    projectConfigPath = path.resolve(projectPagesPath, pageName, `${PROJECT_CONFIG_NAME}${ext}`);
+    const isExisted = await fs.pathExists(projectConfigPath);
+    if (isExisted) break;
+  }
+  if (!projectConfigPath) {
+    throw new Error(`Project config file does not exist`);
+  }
+  // 读取项目配置文件
+  const projectConfig = await esbuildDynamicImport(projectConfigPath);
+
+  // 构造构建配置
+  const builderConfig = await formatBuilderConfig({
     mode,
     builderName,
     projectPath,
