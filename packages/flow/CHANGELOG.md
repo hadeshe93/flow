@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.3.2
+
+### Patch Changes
+
+- da595b6: 更新依赖包版本
+
 ## 0.3.1
 
 ### Patch Changes
