@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.3.3
+
+### Patch Changes
+
+- fdb2294: 切换使用 tsc 编译构建代码
+
 ## 0.3.2
 
 ### Patch Changes
