@@ -50,8 +50,8 @@
   },
   "dependencies": {
     "@hadeshe93/builder-core": "^0.2.10",
-    "@hadeshe93/builder-vite": "^0.2.9",
-    "@hadeshe93/builder-webpack": "0.2.10",
+    "@hadeshe93/builder-vite": "^0.2.10",
+    "@hadeshe93/builder-webpack": "0.2.14",
     "@hadeshe93/lib-node": "^0.7.0",
     "@hadeshe93/wpconfig-core": "^0.1.15",
     "ali-oss": "^6.17.1",

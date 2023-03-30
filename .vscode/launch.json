@@ -31,6 +31,15 @@
         "debug:dev"
       ],
       "stopOnEntry": true,
-    }
+    },
+    {
+      "name": "[Debug] Attach",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
   ]
 }
