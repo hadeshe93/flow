@@ -31,7 +31,8 @@
     "debug:help": "FLOW_RUN=1 ts-node -P ./tsconfig.json ./src/index.ts --help",
     "bin:init": "cross-env DEBUG=@hadeshe93/* node ./bin.js init",
     "bin:dev": "cross-env DEBUG=@hadeshe93/* node ./bin.js dev --cwd /cbs/xcode/web-project-starter/packages/webpack5-vue3",
-    "build": "rimraf ./dist && cross-env NODE_ENV=production tsc -p tsconfig.json && pnpm run copy:assets",
+    "build": "rimraf ./dist && tsc -p tsconfig.json",
+    "build:deprecated": "rimraf ./dist && cross-env NODE_ENV=production tsc -p tsconfig.json && pnpm run copy:assets",
     "copy:assets": "copyfiles -u 1 -a src/**/*.example dist",
     "showconfig": "ts-node -P ./tsconfig.json --showConfig",
     "check": "tsc -p tsconfig.json --noEmit"
