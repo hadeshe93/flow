@@ -2,11 +2,13 @@ import glob from 'glob';
 import path from 'path';
 import rimraf from 'rimraf';
 import fsExtra from 'fs-extra';
+import { Injectable, Autowired } from '@opensumi/di';
 
-import { debug } from '../../utils/debug';
-import { Interactor } from '../../core/interactor';
-import { getAliyunOssOper } from '../../utils/aliyun-oss';
-import { getInternalPluginName } from '../../utils/plugin';
+import { debug } from '@/utils/debug';
+import { Logger, Configuration } from '@/types/core';
+import { AbstractInteractorImpl } from '@/core/interactor';
+import { getAliyunOssOper } from '@/utils/aliyun-oss';
+import { getInternalPluginName } from '@/utils/plugin';
 import { bootstrapBuilder, SUPPORTED_BUILDERS, BootstrapBuilderOptions } from './utils/builder';
 import { commandsOptionMap, PAGES_RELATIVE_PATH } from './constants/configs';
 
@@ -46,12 +48,22 @@ interface OptionsForDeploy {
 
 export const OSS_ROOT_DIR = '/flow';
 
-export class Workflow extends Interactor {
+export const DevkitWorkflow = Symbol('DevkitWorkflow');
+export type DevkitWorkflow = AbstractInteractorImpl;
+
+@Injectable({ multiple: true })
+export class DevkitWorkflowImpl extends AbstractInteractorImpl implements DevkitWorkflow {
   ctx: WorkflowCtx = {
     projectRootPath: '',
     projectPagesPath: '',
     options: {},
   };
+
+  @Autowired(Logger)
+  logger: Logger;
+
+  @Autowired(Configuration)
+  configuration: Configuration;
 
   async initialize(options: OptionsForRunningWorkflow): Promise<void> {
     const processCwd = process.cwd();

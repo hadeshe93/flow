@@ -1,23 +1,32 @@
 import path from 'path';
 import fsExtra from 'fs-extra';
+import { Injectable, Autowired } from '@opensumi/di';
 import { downloadGitRepo } from '@hadeshe93/lib-node';
 
-import { Interactor } from '../../core/interactor';
+import { Logger } from '@/types/core';
+import { AbstractInteractorImpl } from '@/core/interactor';
 import { TemplateFrameworkConfig } from './types/config';
 
 interface InitiatorOptions {
   frameworkConfig: TemplateFrameworkConfig;
 }
 
+export const DevkitInitiator = Symbol('DevkitInitiatorImpl');
+export type DevkitInitiator = AbstractInteractorImpl;
+
 /**
  * 项目脚手架模板初始化类
  *
  * @export
  * @class Initiator
- * @extends {Interactor}
+ * @extends {AbstractInteractorImpl}
  */
-export class Initiator extends Interactor {
+@Injectable({ multiple: true })
+export class DevkitInitiatorImpl extends AbstractInteractorImpl implements DevkitInitiator {
   options: InitiatorOptions;
+
+  @Autowired(Logger)
+  logger: Logger;
 
   constructor(options: InitiatorOptions) {
     super();
@@ -49,6 +58,7 @@ export class Initiator extends Interactor {
     this.logger.info(`Please excute following instructions to install dependencies:`);
     this.logger.info(`  cd ${this.ctx.appName} && pnpm install`);
   }
+
   async end() {
     await fsExtra.remove(this.ctx.destTplRepoPath);
   }

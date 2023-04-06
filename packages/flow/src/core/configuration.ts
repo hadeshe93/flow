@@ -1,7 +1,8 @@
-import { createMemFsCreator } from '../utils/memfs';
+import { Injectable } from '@opensumi/di';
 import { FLOW_CONFIGURATION_PATH } from './constants';
 
-import { FlowConfiguration } from '@/types/core';
+import { FlowConfiguration, Configuration } from '@/types/core';
+import { createMemFsCreator } from '@/utils/memfs';
 
 const createMemFs = createMemFsCreator();
 
@@ -11,7 +12,8 @@ const createMemFs = createMemFsCreator();
  * @export
  * @class Configuration
  */
-export class Configuration {
+@Injectable()
+export class ConfigurationImpl implements Configuration {
   private fs = createMemFs();
   private lastData: FlowConfiguration = {
     plugins: [],
@@ -25,7 +27,7 @@ export class Configuration {
     this.lastData = JSON.parse(JSON.stringify(this.data));
   }
 
-  // 读取配置
+  // 加载配置
   private load(): FlowConfiguration {
     return (
       (this.fs.readJSON(FLOW_CONFIGURATION_PATH) as unknown as FlowConfiguration) || {
@@ -35,7 +37,7 @@ export class Configuration {
   }
 
   // 保存配置
-  async save(): Promise<undefined> {
+  async save(): Promise<void> {
     const lastDataSnapshot = JSON.stringify(this.lastData);
     const dataSnapshot = JSON.stringify(this.data);
     if (lastDataSnapshot === dataSnapshot) return;
@@ -53,5 +55,3 @@ export class Configuration {
     this.lastData = JSON.parse(dataSnapshot);
   }
 }
-
-export const configuration = new Configuration();

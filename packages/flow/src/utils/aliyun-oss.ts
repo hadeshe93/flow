@@ -1,7 +1,7 @@
 import glob from 'glob';
 import path from 'path';
 import AliOss, { PutObjectResult } from 'ali-oss';
-import { debug } from '../utils/debug';
+import { debug } from '@/utils/debug';
 
 interface OptionsForAliyunOssOper {
   accessKeyId: string;

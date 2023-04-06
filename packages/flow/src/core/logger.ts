@@ -1,9 +1,12 @@
-import ora, { Ora } from 'ora';
 import chalk from 'chalk';
-
 import { format } from 'util';
+import ora, { Ora } from 'ora';
+import { Injectable } from '@opensumi/di';
 
-export class Logger {
+import { Logger } from '@/types/core';
+
+@Injectable()
+export class LoggerImpl implements Logger {
   constructor() {
     // 分片日志相关
   }
@@ -18,18 +21,18 @@ export class Logger {
     console.log(chalk.cyan('ℹ'), chalk.cyan(msg));
   }
 
-  error(...args: any) {
-    let message = args[0];
-    if (message instanceof Error) message = message.message.trim();
-    const msg = format.apply(format, args);
-    console.error(chalk.red('✖'), chalk.red(msg));
-  }
-
   warn(...args: any) {
     let message = args[0];
     if (message instanceof Error) message = message.message.trim();
     const msg = format.apply(format, args);
     console.warn(chalk.yellow('⚠'), chalk.yellow(msg));
+  }
+
+  error(...args: any) {
+    let message = args[0];
+    if (message instanceof Error) message = message.message.trim();
+    const msg = format.apply(format, args);
+    console.error(chalk.red('✖'), chalk.red(msg));
   }
 
   success(...args: any) {
@@ -63,5 +66,3 @@ export class Logger {
     }
   }
 }
-
-export const logger = new Logger();

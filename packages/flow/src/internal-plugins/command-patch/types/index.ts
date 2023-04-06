@@ -1,6 +1,6 @@
 import Debug from 'debug';
 import execa from 'execa';
-import type { Logger } from '../../../core/logger';
+import type { Logger } from '@/types/core';
 type Enquirer = typeof import('enquirer');
 
 export interface PatcherCtx {

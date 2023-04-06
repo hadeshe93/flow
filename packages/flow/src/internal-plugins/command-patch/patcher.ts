@@ -1,9 +1,12 @@
 import path from 'path';
 import execa from 'execa';
 import fsExtra from 'fs-extra';
-import { debug } from '../../utils/debug';
-import { Interactor } from '../../core/interactor';
-import { resolveGlobModules, requireResolve } from '../../utils/resolve';
+import { Injectable, Autowired } from '@opensumi/di';
+
+import { Logger } from '@/core';
+import { debug } from '@/utils/debug';
+import { AbstractInteractorImpl } from '@/core/interactor';
+import { resolveGlobModules, requireResolve } from '@/utils/resolve';
 import type { PatcherCtx, PatcherUtils } from './types/index';
 
 type Enquirer = typeof import('enquirer');
@@ -16,17 +19,29 @@ interface PatcherOptions {
 const PRESETS_FOLDER_NAME = 'presets';
 const PRESET_ENTRY_FILE_NAME = 'index';
 
-export class Patcher extends Interactor {
+export const Patcher = Symbol('Patcher');
+export type Patcher = AbstractInteractorImpl;
+
+@Injectable({ multiple: true })
+export class PatcherImpl extends AbstractInteractorImpl implements Patcher {
   ctx: PatcherCtx = {
     targetPath: '',
     preset: '',
     presetAbsPath: '',
   };
-  utils: PatcherUtils = {
-    debug,
-    execa,
-    logger: this.logger,
-  };
+  utils: PatcherUtils;
+
+  @Autowired(Logger)
+  logger: Logger;
+
+  constructor() {
+    super();
+    this.utils = {
+      debug,
+      execa,
+      logger: this.logger,
+    };
+  }
 
   async initialize(options: PatcherOptions): Promise<void> {
     const processCwd = process.cwd();
@@ -39,12 +54,8 @@ export class Patcher extends Interactor {
     this.ctx.targetPath = targetPath;
     this.ctx.preset = options.preset;
 
-    const paramsForCreator = {
-      debug: this.utils.debug,
-      logger: this.utils.logger,
-    };
-    this.utils.copyAsset = createCopyAsset(this.ctx, paramsForCreator);
-    this.utils.writeAsset = createWriteAsset(this.ctx, paramsForCreator);
+    this.utils.copyAsset = this.createCopyAsset(this.ctx);
+    this.utils.writeAsset = this.createWriteAsset(this.ctx);
   }
 
   async prompt(enquirer: Enquirer): Promise<void> {
@@ -87,6 +98,36 @@ export class Patcher extends Interactor {
     );
     this.logger.success('Patch done successfully');
   }
+
+  /**
+   * 创建拷贝资源的函数
+   *
+   * @param {PatcherCtx} ctx
+   * @returns {*}
+   */
+  private createCopyAsset(ctx: PatcherCtx) {
+    return (src: string, dest: string) => {
+      debug(`[Patcher - ${ctx.preset} - copyAsset] src:`, src);
+      debug(`[Patcher - ${ctx.preset} - copyAsset] dest:`, dest);
+      fsExtra.copySync(src, dest);
+      this.logger.success(`[Patch] Inject file "${path.basename(dest)}" successfully`);
+    };
+  }
+
+  /**
+   * 创建写入资源的函数
+   *
+   * @param {PatcherCtx} ctx
+   * @returns {*}
+   */
+  private createWriteAsset(ctx: PatcherCtx) {
+    return (fileContent: string, dest: string) => {
+      debug(`[Patcher - ${ctx.preset} - writeAsset] fileContent:`, fileContent);
+      debug(`[Patcher - ${ctx.preset} - writeAsset] dest:`, dest);
+      fsExtra.writeFileSync(dest, fileContent, { encoding: 'utf-8' });
+      this.logger.success(`[Patch] Inject file "${path.basename(dest)}" successfully`);
+    };
+  }
 }
 
 /**
@@ -99,36 +140,4 @@ function getPresetList(): ReturnType<typeof resolveGlobModules> {
     entryFileName: PRESET_ENTRY_FILE_NAME,
     excludeInvalidModule: true,
   });
-}
-
-/**
- * 创建拷贝资源的函数
- *
- * @param {PatcherCtx} ctx
- * @param {(Pick<PatcherUtils, 'debug' | 'logger'>)} utils
- * @returns {*}
- */
-function createCopyAsset(ctx: PatcherCtx, utils: Pick<PatcherUtils, 'debug' | 'logger'>) {
-  return (src: string, dest: string) => {
-    debug(`[Patcher - ${ctx.preset} - copyAsset] src:`, src);
-    debug(`[Patcher - ${ctx.preset} - copyAsset] dest:`, dest);
-    fsExtra.copySync(src, dest);
-    utils.logger.success(`[Patch] Inject file "${path.basename(dest)}" successfully`);
-  };
-}
-
-/**
- * 创建写入资源的函数
- *
- * @param {PatcherCtx} ctx
- * @param {(Pick<PatcherUtils, 'debug' | 'logger'>)} utils
- * @returns {*}
- */
-function createWriteAsset(ctx: PatcherCtx, utils: Pick<PatcherUtils, 'debug' | 'logger'>) {
-  return (fileContent: string, dest: string) => {
-    debug(`[Patcher - ${ctx.preset} - writeAsset] fileContent:`, fileContent);
-    debug(`[Patcher - ${ctx.preset} - writeAsset] dest:`, dest);
-    fsExtra.writeFileSync(dest, fileContent, { encoding: 'utf-8' });
-    utils.logger.success(`[Patch] Inject file "${path.basename(dest)}" successfully`);
-  };
 }

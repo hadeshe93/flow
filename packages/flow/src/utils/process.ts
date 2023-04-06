@@ -1,11 +1,7 @@
 import { debug } from './debug';
+import { Logger } from '@/types/core';
 
-interface Logger {
-  log: (...args: any[]) => any;
-  error: (...args: any[]) => any;
-}
-
-export function init(logger: Logger = console) {
+export function initProcess(logger: Pick<Logger, 'error'>) {
   // process.on('beforeExit', (code) => {
   //   debug(`Code before process's exiting is ${code}`);
   // });

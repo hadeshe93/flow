@@ -1,44 +1,29 @@
 import minimist from 'minimist';
 import OriginalCommander from 'commander';
-import { logger } from './logger';
-import { getPackageJSON } from '../utils/package-json';
-import { createSandboxInstanceCreator } from '../utils/sandbox';
+import { Injectable, Autowired } from '@opensumi/di';
 
-type CommandArgumentItem = [
-  string,
-  {
-    description: string;
-    required?: boolean;
-  },
-];
-type CommandOptionMap = Record<
-  string,
-  {
-    description: string;
-    alias?: string;
-    valueName?: string;
-  }
->;
-interface CommandDetail {
-  command: string;
-  description: string;
-  fn: (...args: any) => void | Promise<void>;
-  pluginName?: string;
-  argumentList?: CommandArgumentItem[];
-  optionMap?: CommandOptionMap;
-  allowUnknownOption?: boolean;
-}
+import {
+  Logger,
+  ContributionProvider,
+  Command,
+  CommandRegistry,
+  CommandDetail,
+  CommandContribution,
+} from '@/types/core';
+import { getPackageJSON } from '@/utils/package-json';
 
-export class Commander {
-  logger = logger;
-  commandsMap: Map<string, CommandDetail> = new Map();
-  program = new OriginalCommander.Command();
+@Injectable()
+export class CommandRegistryImpl implements CommandRegistry {
+  protected readonly program = new OriginalCommander.Command();
+  protected readonly commandsMap: Map<string, CommandDetail> = new Map();
+
+  @Autowired(Logger)
+  logger: Logger;
+
+  @Autowired(CommandContribution)
+  private commandContributionProvider: ContributionProvider<CommandContribution>;
 
   constructor() {
-    this.init();
-  }
-
-  private init() {
     const CLI_NAME = 'hh';
     const packageJson = getPackageJSON();
     this.program.name(CLI_NAME).usage('<command> [options]').version(packageJson.version);
@@ -48,7 +33,26 @@ export class Commander {
     });
   }
 
-  register(commandDetail: CommandDetail) {
+  /**
+   * 初始化贡献点
+   *
+   * @memberof CommandRegistryImpl
+   */
+  initialize(): void {
+    const contributions = this.commandContributionProvider.getContributions();
+    for (const contribution of contributions) {
+      contribution.registerCommand(this);
+    }
+  }
+
+  /**
+   * 注册命令
+   *
+   * @param {CommandDetail} commandDetail
+   * @returns {*}
+   * @memberof CommandRegistryImpl
+   */
+  registerCommand(commandDetail: CommandDetail) {
     const { command: commandName } = commandDetail;
     const existedCommandDetail = this.commandsMap.get(commandName);
     if (existedCommandDetail) {
@@ -101,21 +105,33 @@ export class Commander {
     });
   }
 
-  run() {
+  excute(): void {
     this.program.parse(process.argv);
   }
 }
 
-export const getSandboxCommander = createSandboxInstanceCreator<Commander, 'register', { pluginName: string }>({
-  register(commanderIns, extraOptions, commandDetail) {
-    const { pluginName } = extraOptions || {};
-    commanderIns.register({
-      pluginName,
-      ...commandDetail,
-    });
-  },
-});
+@Injectable()
+export class CommandImpl implements Command {
+  @Autowired(CommandRegistry)
+  commandRegistry: CommandRegistry;
 
+  /**
+   * 运行
+   *
+   * @memberof CommandImpl
+   */
+  run() {
+    this.commandRegistry.excute();
+  }
+}
+
+/**
+ * 获取运行时命令的参数
+ *
+ * @export
+ * @param {CommandDetail} commandDetail
+ * @returns {*}
+ */
 export function getActionArgsDisposal(commandDetail: CommandDetail) {
   const { argumentList } = commandDetail;
   const argumentNameList = (argumentList || []).map(([argumentName]) => argumentName);
@@ -132,5 +148,3 @@ export function getActionArgsDisposal(commandDetail: CommandDetail) {
     };
   };
 }
-
-export const commander = new Commander();

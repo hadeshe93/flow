@@ -1,18 +1,19 @@
 import execa = require('execa');
-import { logger } from './logger';
-import { PluginDetail } from '../types/core';
-import { configuration } from './configuration';
-import { getFlowRootDir } from '../utils/resolve';
+import { Autowired, Injectable } from '@opensumi/di';
 
-interface InstallOptions {
-  absolutePath?: string;
-  fromInternal?: boolean;
-}
+import { Configuration } from '@/types/core';
+import { getFlowRootDir } from '@/utils/resolve';
+import { Logger, Plugger, PluggerInstallOptions, PluginDetail } from '@/types/core';
 
-export class Plugger {
-  pluginsMap: Map<string, PluginDetail> = new Map();
-  logger = logger;
-  configuration = configuration;
+@Injectable()
+export class PluggerImpl implements Plugger {
+  private pluginsMap: Map<string, PluginDetail> = new Map();
+
+  @Autowired(Configuration)
+  private configuration: Configuration;
+
+  @Autowired(Logger)
+  private logger: Logger;
 
   constructor() {
     // 读取配置文件进行初始化
@@ -46,7 +47,7 @@ export class Plugger {
    * @param {InstallOptions} [options]
    * @memberof Plugger
    */
-  public async install(rawPkgName: string, options?: InstallOptions) {
+  public async install(rawPkgName: string, options?: PluggerInstallOptions) {
     if (!options?.fromInternal) {
       await this.installPkg(rawPkgName);
     }
@@ -94,7 +95,7 @@ export class Plugger {
       }
       if (!isPluginExisting) {
         invalidInternalPlugins.push(pluginName);
-        logger.warn(
+        this.logger.warn(
           `[plugger.doctor] ${
             pluginDetail.fromInternal ? 'Internal plugin' : 'Plugin'
           } '${pluginName}' is not found, and it will be remove from configuration.`,
@@ -113,19 +114,12 @@ export class Plugger {
   }
 
   /**
-   * 加载所有插件
+   * 获取所有的插件列表
    *
-   * @protected
-   * @param {*} flow
-   * @memberof Plugger
+   * @returns {*}  {PluginDetail[]}
+   * @memberof PluggerImpl
    */
-  protected loadAll(flow: any) {
-    const entries = this.pluginsMap.entries();
-    for (const entry of entries) {
-      const [, pluginDetail] = entry;
-      require(pluginDetail.absolutePath)(flow);
-    }
+  public getAllPlugins(): PluginDetail[] {
+    return this.configuration.data.plugins;
   }
 }
-
-export const plugger = new Plugger();
