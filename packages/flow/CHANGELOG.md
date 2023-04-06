@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.3.4
+
+### Patch Changes
+
+- 7a76814: 使用 di 重构 flow
+
 ## 0.3.3
 
 ### Patch Changes
