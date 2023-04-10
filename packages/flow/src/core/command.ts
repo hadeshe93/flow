@@ -24,8 +24,8 @@ export class CommandRegistryImpl implements CommandRegistry {
   private commandContributionProvider: ContributionProvider<CommandContribution>;
 
   constructor() {
-    const CLI_NAME = 'hh';
     const packageJson = getPackageJSON();
+    const CLI_NAME = Object.keys(packageJson.bin || {})?.[0] || 'flow';
     this.program.name(CLI_NAME).usage('<command> [options]').version(packageJson.version);
     this.program.on('--help', () => {
       this.logger.log('');

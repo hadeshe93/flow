@@ -21,7 +21,7 @@
     "url": "git+https://github.com/hadeshe93/flow.git"
   },
   "scripts": {
-    "debug": "cross-env DEBUG=@hadeshe93/* FLOW_RUN=1 ts-node -r tsconfig-paths/register --transpileOnly -P ./tsconfig.json ./src/index.ts",
+    "debug": "cross-env DEBUG=* FLOW_RUN=1 ts-node -r tsconfig-paths/register --transpileOnly -P ./tsconfig.json ./src/index.ts",
     "debug:help": "pnpm debug -- --help",
     "debug:ls": "pnpm run debug -- ls",
     "debug:init": "npm run debug -- init",
