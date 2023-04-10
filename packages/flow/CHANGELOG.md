@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.3.5
+
+### Patch Changes
+
+- 5ec79e3: 抽取公共配置
+
 ## 0.3.4
 
 ### Patch Changes
