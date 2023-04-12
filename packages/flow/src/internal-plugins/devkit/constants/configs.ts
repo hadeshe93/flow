@@ -12,6 +12,18 @@ export const PAGES_RELATIVE_PATH = path.join('src', 'pages');
 const TEMPLATE_MONOREPO_URL = 'github:hadeshe93/web-project-starter';
 export const templateFrameworkConfigs: TemplateFrameworkConfig[] = [
   {
+    templateType: 'solid',
+    templateName: 'vite4-solid',
+    repoUrl: TEMPLATE_MONOREPO_URL,
+    repoTemplatePath: 'packages/vite4-solid',
+  },
+  {
+    templateType: 'vue3',
+    templateName: 'vite4-vue3',
+    repoUrl: TEMPLATE_MONOREPO_URL,
+    repoTemplatePath: 'packages/vite4-vue3',
+  },
+  {
     templateType: 'vue3',
     templateName: 'webpack5-vue3',
     repoUrl: TEMPLATE_MONOREPO_URL,

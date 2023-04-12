@@ -1,7 +1,7 @@
-export type TemplateFrameworkType = 'vue3' | 'react17' | 'vue3-element' | 'react17-antd';
+export type TemplateFrameworkType = 'solid' | 'vue3' | 'react17' | 'vue3-element' | 'react17-antd';
 
 export type TemplateFrameworkConfig = {
-  templateType: 'vue3' | 'react17' | 'vue3-element' | 'react17-antd';
+  templateType: TemplateFrameworkType;
   templateName: string;
   repoUrl: string;
   repoTemplatePath: string;
