@@ -1,5 +1,11 @@
 # @hadeshe93/flow
 
+## 0.3.6
+
+### Patch Changes
+
+- fbf4d02: 更新依赖包版本
+
 ## 0.3.5
 
 ### Patch Changes
